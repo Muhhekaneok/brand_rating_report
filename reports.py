@@ -23,15 +23,35 @@ def _generate_average_rating_report(products: Iterator[dict]) -> ReportData:
     # print(average_ratings)
 
     average_ratings.sort(key=lambda item: item[1], reverse=True)
-
     return average_ratings
+
+
+def _generate_average_price_report(products: Iterator[dict]) -> ReportData:
+    price_ratings = defaultdict(list)
+
+    for product in products:
+        brand = product.get("brand")
+        price = product.get("price")
+        if brand and isinstance(price, float):
+            price_ratings[brand].append(price)
+
+    average_prices = []
+    for brand, price in price_ratings.items():
+        avg_price = sum(price) / len(price)
+        average_prices.append((brand, round(avg_price, 2)))
+
+    average_prices.sort(key=lambda item: item[1], reverse=True)
+    return average_prices
+
 
 REPORTS: dict[str, ReportGenerator] = {
     "average-rating": _generate_average_rating_report,
+    "average-price": _generate_average_price_report,
 }
 
 HEADERS: dict[str, list[str]] = {
     "average-rating": ["brand", "rating"],
+    "average-price": ["brand", "price"],
 }
 
 
