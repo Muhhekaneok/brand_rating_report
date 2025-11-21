@@ -37,6 +37,8 @@ def main():
                 headers=report_header,
                 showindex=range(1, len(report_data) + 1))
             )
+        else:
+            print("No data found")
 
     except ValueError as e:
         print(f"Error: {e}")

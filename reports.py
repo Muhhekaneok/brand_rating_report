@@ -1,19 +1,25 @@
 from collections import defaultdict
 from typing import Callable, Iterator
 
-ReportData = list[tuple]
+ReportData = list[tuple[str, float]]
 
 ReportGenerator = Callable[[Iterator[dict]], ReportData]
 
 
 def _generate_average_rating_report(products: Iterator[dict]) -> ReportData:
-    brand_ratings = defaultdict(list)
+    brand_ratings: dict[str, list[float]] = defaultdict(list)
 
     for product in products:
         brand = product.get("brand")
-        rating = product.get("rating")
-        if brand and isinstance(rating, float):
-            brand_ratings[brand].append(rating)
+        raw_ratings = product.get("rating")
+
+        try:
+            ratings = float(raw_ratings)
+        except (TypeError, ValueError):
+            continue
+
+        if brand:
+            brand_ratings[brand].append(ratings)
     # print(brand_ratings)
 
     average_ratings = []
@@ -27,16 +33,24 @@ def _generate_average_rating_report(products: Iterator[dict]) -> ReportData:
 
 
 def _generate_average_price_report(products: Iterator[dict]) -> ReportData:
-    price_ratings = defaultdict(list)
+    price_ratings: dict[str, list[float]] = defaultdict(list)
 
     for product in products:
         brand = product.get("brand")
-        price = product.get("price")
-        if brand and isinstance(price, float):
+        raw_price = product.get("price")
+
+        try:
+            price = float(raw_price)
+        except (TypeError, ValueError):
+            continue
+
+        if brand:
             price_ratings[brand].append(price)
 
-    average_prices = []
+    average_prices: ReportData = []
     for brand, price in price_ratings.items():
+        if not price:
+            continue
         avg_price = sum(price) / len(price)
         average_prices.append((brand, round(avg_price, 2)))
 
