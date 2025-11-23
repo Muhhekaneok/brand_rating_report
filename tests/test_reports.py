@@ -1,4 +1,5 @@
 import pytest
+
 from reports import _generate_average_rating_report, _generate_average_price_report
 
 
@@ -10,7 +11,7 @@ def sample_products():
         {"brand": "apple", "price": 750.59, "rating": 4.0},
         {"brand": "xiaomi", "price": 510.0, "rating": 3.0},
         {"brand": "samsung", "price": 890.98, "rating": 5.0},
-        {"brand": "apple", "price": 775.69, "rating": 4.5}
+        {"brand": "apple", "price": 775.69, "rating": 4.5},
     ]
 
 
@@ -43,7 +44,7 @@ def test_data_with_missing_keys():
     products = [
         {"brand": "apple", "price": 999, "rating": 5.0},
         {"name": "hello kitty", "price": 1, "rating": 4.0},
-        {"brand": "samsung"}
+        {"brand": "samsung"},
     ]
     report = _generate_average_rating_report(products.__iter__())
     assert len(report) == 1
@@ -61,8 +62,6 @@ def test_average_price_calculation(sample_products):
 
 
 def test_average_price_calculation_with_invalid_data():
-    products = [
-        {"brand": "honor", "price": "n/a"}
-    ]
+    products = [{"brand": "honor", "price": "n/a"}]
     report = _generate_average_price_report(products.__iter__())
     assert report == []
